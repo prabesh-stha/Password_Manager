@@ -8,14 +8,23 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var showSignIn: Bool = true
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        ZStack{
+            if !showSignIn
+            {
+                Text("Hello")
+            }
         }
-        .padding()
+        .onAppear{
+            let auth = try? AuthenticationManager.shared.getAuthenticatedUser()
+            self.showSignIn = auth == nil ? true : false
+        }
+        .fullScreenCover(isPresented: $showSignIn, content: {
+            NavigationStack{
+                EmailView(showSignIn: $showSignIn)
+            }
+        })
     }
 }
 
